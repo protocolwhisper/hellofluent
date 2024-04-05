@@ -1,0 +1,14 @@
+{
+    "name": "hello-fluentjs",
+    "version": "1.0.0",
+    "description": "A Hardhat project",
+    "scripts": {
+        "compile": "hardhat compile",
+        "test": "hardhat test",
+        "deploy": "node scripts/deploy.js",
+        "deploy-vyper": "node scripts/deployvyper.js"
+    },
+    "dependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^1.0.0"
+    }
+}
