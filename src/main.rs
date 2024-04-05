@@ -2,6 +2,7 @@ use std::env;
 use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::Path;
+use dialoguer::Select;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -25,20 +26,36 @@ fn main() -> io::Result<()> {
         self.greet = "Hello World"
     "#;
 
-    if args.len() > 1 {
-        match args[1].as_str() {
-            "--hardhatjs" => setup_hardhat_js(solidity_content , vyper_content)?,
-            "--tshardhat" => setup_ts_hardhat(solidity_content , vyper_content)?,
-            "--rust" => setup_rust_code()?,
-            _ => println!("Invalid option. Use --hardhatjs --tshardhat or --rust"),
-        }
-    } else {
-        println!("No option provided. Use --hardhatjs or --tshardhat.");
-    }
+    let ascii_art = r#"
+██   ██ ███████ ██      ██       ██████      ███████ ██      ██    ██ ███████ ███    ██ ████████ 
+██   ██ ██      ██      ██      ██    ██     ██      ██      ██    ██ ██      ████   ██    ██    
+███████ █████   ██      ██      ██    ██     █████   ██      ██    ██ █████   ██ ██  ██    ██    
+██   ██ ██      ██      ██      ██    ██     ██      ██      ██    ██ ██      ██  ██ ██    ██    
+██   ██ ███████ ███████ ███████  ██████      ██      ███████  ██████  ███████ ██   ████    ██    
+                                                                                                 
+                                                                                                 
+"#;
+
+    println!("{}", ascii_art);
+    println!("HelloFluent\n");
+
+    let selections = ["Hardhat JavaScript", "Hardhat TypeScript", "Rust"];
+    let selection = Select::new()
+        .with_prompt("Choose your setup")
+        .default(0)
+        .items(&selections[..])
+        .interact()
+        .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;  // Convert dialoguer error to io::Error
+
+    match selection {
+        0 => setup_hardhat_js(solidity_content, vyper_content),
+        1 => setup_ts_hardhat(solidity_content, vyper_content),
+        2 => setup_rust_code(),
+        _ => unreachable!(),
+    };
 
     Ok(())
 }
-
 fn setup_hardhat_js(soliditysc: &str , vypersc: &str) -> io::Result<()> {
     let contracts_directory = "contracts";
     let scripts_directory = "scripts";
