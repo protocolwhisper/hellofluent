@@ -29,7 +29,8 @@ fn main() -> io::Result<()> {
         match args[1].as_str() {
             "--hardhatjs" => setup_hardhat_js(solidity_content , vyper_content)?,
             "--tshardhat" => setup_ts_hardhat(solidity_content , vyper_content)?,
-            _ => println!("Invalid option. Use --hardhatjs or --tshardhat."),
+            "--rust" => setup_rust_code()?,
+            _ => println!("Invalid option. Use --hardhatjs --tshardhat or --rust"),
         }
     } else {
         println!("No option provided. Use --hardhatjs or --tshardhat.");
@@ -267,4 +268,151 @@ main()
     println!("Required directories and files for TypeScript Hardhat project have been created successfully.");
 
     Ok(())
+}
+
+fn setup_rust_code() -> io::Result<()>{
+    let rust_sc = r#"
+    #![no_std]
+    extern crate alloc;
+    use alloc::string::String;
+
+    extern crate fluentbase_sdk;
+
+    use fluentbase_sdk::{SysPlatformSDK, SDK};
+
+    #[no_mangle]
+    pub extern "C" fn deploy() {
+        // Deployment logic if any
+    }
+
+    #[no_mangle]
+    pub extern "C" fn main() {
+        let data = "Hello, World";
+        SDK::sys_write(data.as_bytes());
+    }
+    "#;
+    
+    let cargo_toml_content = r#"[dependencies]
+    fluentbase-sdk = { git = "https://github.com/fluentlabs-xyz/fluentbase", default-features = false, features = ["evm"] }
+
+    [lib]
+    crate-type = ["cdylib"]
+
+    [profile.release]
+    panic = "abort"
+    lto = true
+    opt-level = 'z'
+    strip = true
+    "#;
+    
+    let js_code = r#"
+    const {Web3, ETH_DATA_FORMAT} = require('web3');
+    const fs = require('fs');
+    
+    const DEPLOYER_PRIVATE_KEY = 'add your private key here';
+    
+    const main = async () => {
+        if (process.argv.length < 3) {
+            console.log(`You must specify path to the WASM binary!`);
+            console.log(`Example: node deploy-contract.js --dev GIVE_PATH_HERE`);
+            process.exit(-1);
+        }
+        let args = process.argv.slice(2);
+        const checkFlag = (param) => {
+            let indexOf = args.indexOf(param)
+            if (indexOf < 0) {
+                return false
+            }
+            args.splice(indexOf, 1)
+            return true
+        };
+        let isLocal = checkFlag('--local')
+        let isDev = checkFlag('--dev')
+    
+        let web3Url = 'https://rpc.dev0.fluentlabs.xyz/';
+        if (isLocal) {
+            web3Url = 'http://127.0.0.1:8545';
+        }
+    
+        let [binaryPath] = args;
+        let wasmBinary = fs.readFileSync(binaryPath).toString('hex');
+        const web3 = new Web3(web3Url);
+        let privateKey = process.env.DEPLOYER_PRIVATE_KEY || DEPLOYER_PRIVATE_KEY;
+        let account = web3.eth.accounts.privateKeyToAccount('0x' + privateKey);
+    
+        console.log('Signing transaction...');
+        const gasPrice = await web3.eth.getGasPrice(ETH_DATA_FORMAT)
+        const signedTransaction = await web3.eth.accounts.signTransaction({
+            data: '0x' + wasmBinary,
+            gasPrice,
+            gas: 1_000_000,
+            from: account.address,
+        }, privateKey)
+    
+        let contractAddress = '';
+        console.log('Sending transaction...');
+        await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
+           .on('confirmation', confirmation => {
+               contractAddress = confirmation.receipt.contractAddress;
+               console.log(confirmation)
+               if (contractAddress) {
+                   console.log(`Contract address is: ${contractAddress}`);
+               }
+           });
+    
+        const result = await web3.eth.call({
+            to: contractAddress,
+        });
+        function isASCII(str) {
+            return /^[\x00-\x7F]*$/.test(str);
+        }
+        if (isASCII(web3.utils.hexToAscii(result))) {
+            console.log(`Message: "${web3.utils.hexToAscii(result)}"`)
+        } else {
+            console.log(`Message: "${result}"`)
+        }
+    
+        // const signedTransaction1 = await web3.eth.accounts.signTransaction({
+        //     to: contractAddress,
+        //     gas: 1_000_000,
+        // }, DEPLOYER_PRIVATE_KEY)
+        // const receipt1 = await web3.eth.sendSignedTransaction(signedTransaction1.rawTransaction);
+        // console.log(`Receipt: ${JSON.stringify(receipt1, null, 2)}`)
+    
+        const latestMinedBlockNumber = await web3.eth.getBlockNumber();
+        console.log(`Latest block number: ${latestMinedBlockNumber}`);
+    
+        process.exit(0);
+    };
+    
+    main().then(console.log).catch(console.error);
+    "#;
+    
+
+    // Directory and file paths
+    let src_directory = Path::new("src");
+    let lib_rs_path = src_directory.join("lib.rs");
+    let cargo_toml_path = Path::new("Cargo.toml");
+    let deploy_contract_js_path = Path::new("deploy-contract.js");
+
+    // Ensure source directory exists
+    fs::create_dir_all(src_directory)?;
+
+    // Write Rust smart contract to lib.rs
+    let mut lib_rs_file = File::create(lib_rs_path)?;
+    lib_rs_file.write_all(rust_sc.as_bytes())?;
+
+    // Write Cargo.toml
+    let mut cargo_toml_file = File::create(cargo_toml_path)?;
+    cargo_toml_file.write_all(cargo_toml_content.as_bytes())?;
+
+    // Write JavaScript deploy script
+    let mut deploy_contract_js_file = File::create(deploy_contract_js_path)?;
+    deploy_contract_js_file.write_all(js_code.as_bytes())?;
+
+    println!("Files created successfully.");
+    
+    Ok(())
+
+    
 }
