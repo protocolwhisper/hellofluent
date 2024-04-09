@@ -1,0 +1,21 @@
+{
+    "name": "hardhat-project",
+    "version": "1.0.0",
+    "description": "A Hardhat project",
+    "author": "",
+    "scripts": {
+        "compile": "hardhat compile",
+        "test": "hardhat test",
+        "deploy": "node scripts/deploy.js",
+        "deploy-vyper": "node scripts/deployvyper.js"
+    },
+    "dependencies": {
+        "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+        "@nomiclabs/hardhat-ethers": "^2.0.0",
+        "@nomiclabs/hardhat-vyper": "^3.0.5",
+        "ethers": "^5.4.7"
+    },
+    "devDependencies": {
+        "hardhat": "^2.22.2"
+    }
+}

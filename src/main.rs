@@ -56,20 +56,7 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
-pub fn copy_file(original_path: &str, new_path: &str) -> io::Result<()> {
-    // Open the original file
-    let mut original_file = File::open(original_path)?;
 
-    // Read the contents of the file
-    let mut contents = String::new();
-    original_file.read_to_string(&mut contents)?;
-
-    // Create the new file and write the contents to it
-    let mut new_file = File::create(new_path)?;
-    new_file.write_all(contents.as_bytes())?;
-
-    Ok(())
-}
 
 fn setup_hardhat_js(soliditysc: &str , vypersc: &str) -> io::Result<()> {
     let contracts_directory = "contracts";
@@ -457,7 +444,6 @@ fn setup_rust_code() -> io::Result<()>{
 pub mod test {
     use std::{fs::{self, File}, io::{self, Read, Write}};
 
-    use crate::copy_file;
 
     #[test]
     fn read_and_write()-> io::Result<()>{
