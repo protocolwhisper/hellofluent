@@ -56,7 +56,34 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+fn spin_js() -> io::Result<()>{
+    println!("Copying hello.sol to current directory...");
+    copy_file("src/contract-templates/hello.sol", "hello.sol")?;
 
+    println!("Copying hello-vy.vy to contracts directory...");
+    copy_file("src/contract-templates/hello-v.vy", "contracts/hello-v.vy")?;
+
+    Ok(())
+}
+fn copy_file(source_path: &str, target_path: &str) -> io::Result<()> {
+    // Read the source file
+    let mut original_file = File::open(source_path)?;
+    let mut contents = String::new();
+    original_file.read_to_string(&mut contents)?;
+
+    // Check if target_path has a parent directory and if it needs to be created
+    if let Some(target_dir) = Path::new(target_path).parent() {
+        if !target_dir.exists() {
+            fs::create_dir_all(target_dir)?;
+        }
+    }
+
+    // Create and write to the new file at target_path
+    let mut new_file = File::create(target_path)?;
+    new_file.write_all(contents.as_bytes())?;
+
+    Ok(())
+}
 
 fn setup_hardhat_js(soliditysc: &str , vypersc: &str) -> io::Result<()> {
     let contracts_directory = "contracts";
@@ -444,6 +471,8 @@ fn setup_rust_code() -> io::Result<()>{
 pub mod test {
     use std::{fs::{self, File}, io::{self, Read, Write}};
 
+    use crate::spin_js;
+
 
     #[test]
     fn read_and_write()-> io::Result<()>{
@@ -458,5 +487,9 @@ pub mod test {
     let mut new_file = File::create("output/output-hello.sol")?;
     new_file.write_all(contents.as_bytes())?;
     Ok(())
+    }
+    #[test]
+    fn test_spin_js()-> io::Result<()>{
+        Ok(spin_js()?)
     }
 }
