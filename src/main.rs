@@ -48,7 +48,7 @@ fn main() -> io::Result<()> {
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;  // Convert dialoguer error to io::Error
 
     match selection {
-        0 => setup_hardhat_js(solidity_content, vyper_content),
+        0 => spin_js(),
         1 => setup_ts_hardhat(solidity_content, vyper_content),
         2 => setup_rust_code(),
         _ => unreachable!(),
@@ -57,11 +57,20 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 fn spin_js() -> io::Result<()>{
-    println!("Copying hello.sol to current directory...");
-    copy_file("src/contract-templates/hello.sol", "hello.sol")?;
 
-    println!("Copying hello-vy.vy to contracts directory...");
-    copy_file("src/contract-templates/hello-v.vy", "contracts/hello-v.vy")?;
+    const VYPER_SC: &str = include_str!("contract-templates/hello-v.vy");
+    const SOL_SC: &str = include_str!("contract-templates/hello.sol");
+    const SOL_SCRIPT: &str  = include_str!("js-template/deploy.js");
+    const VYPER_SCRIPT : &str = include_str!("js-template/deployvyper.js");
+    const HARDHAT_CONFIG : &str = include_str!("js-template/hardhat.config.js");
+    const PACKAGE_JSON : &str = include_str!("js-template/package.json");
+
+    create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
+    create_file_with_content("contracts/hello.sol", SOL_SC)?;
+    create_file_with_content("scripts/deploy.js", SOL_SCRIPT)?;
+    create_file_with_content("scripts/deployvyper.js", VYPER_SCRIPT)?;
+    create_file_with_content("hardhat.config.js", HARDHAT_CONFIG)?;
+    create_file_with_content("package.json", PACKAGE_JSON)?;
 
     Ok(())
 }
@@ -84,7 +93,20 @@ fn copy_file(source_path: &str, target_path: &str) -> io::Result<()> {
 
     Ok(())
 }
+fn create_file_with_content(output_path: &str, content: &str) -> io::Result<()> {
+    // Check if the output path has a parent directory and create it if necessary
+    if let Some(parent_dir) = Path::new(output_path).parent() {
+        if !parent_dir.exists() {
+            fs::create_dir_all(parent_dir)?;
+        }
+    }
 
+    // Create and write the content to the new file at the output path
+    let mut file = File::create(output_path)?;
+    file.write_all(content.as_bytes())?;
+
+    Ok(())
+}
 fn setup_hardhat_js(soliditysc: &str , vypersc: &str) -> io::Result<()> {
     let contracts_directory = "contracts";
     let scripts_directory = "scripts";
