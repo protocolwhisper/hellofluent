@@ -97,7 +97,7 @@ fn spin_rust() -> io::Result<()>{
     println!("Creating Rust Project ..");
     const LIB: &str = include_str!("rust-template/lib.rs");
     const GREET_SC: &str = include_str!("rust-template/greeting.rs");
-    const CARGO: &str = include_str!("rust-template/Cargo.toml");
+    const CARGO: &str = include_str!("rust-template/Cargo.txt");
     const MAKE_FILE : &str = include_str!("rust-template/Makefile");
     const STACK_S : &str = include_str!("rust-template/stack.s");
     const GIT_IG : &str = include_str!("rust-template/gitignore.txt");
