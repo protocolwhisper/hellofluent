@@ -10,7 +10,15 @@ include = [
     "src/ts-template/**/*"
 ]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Binary definition
+[[bin]]
+name = "spinfluent"
+path = "src/main.rs"
+
+# Additional metadata (it's a good practice to fill these out)
+description = "Tool for bootstraping Fluent projects"
+license = "MIT" # Or your chosen license
+repository = "https://github.com/protocolwhisper/spinfluent"
 
 [dependencies]
 dialoguer = "0.11.0"
