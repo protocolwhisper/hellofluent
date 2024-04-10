@@ -2,23 +2,16 @@
 name = "spinfluent"
 version = "0.1.0"
 edition = "2021"
+description = "Tool for bootstrapping Fluent projects"
+license = "MIT"
 authors = ["protocolwhisper <protocol.eth@gmail.com>"]
-include = [
-    "src/rust-template/**/*",
-    "src/contract-templates/**/*",
-    "src/js-template/**/*",
-    "src/ts-template/**/*"
-]
-
-# Binary definition
-[[bin]]
-name = "spinfluent"
-path = "src/main.rs"
-
-# Additional metadata (it's a good practice to fill these out)
-description = "Tool for bootstraping Fluent projects"
-license = "MIT" # Or your chosen license
 repository = "https://github.com/protocolwhisper/spinfluent"
+# Consider whether you really need the include field or what should be specified
+# include = ["src/rust-template/**/*", "src/contract-templates/**/*", "src/js-template/**/*", "src/ts-template/**/*"]
 
 [dependencies]
 dialoguer = "0.11.0"
+
+[[bin]]
+name = "spinfluent"
+path = "src/main.rs"
