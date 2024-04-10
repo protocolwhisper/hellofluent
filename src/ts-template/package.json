@@ -6,8 +6,8 @@
     "scripts": {
         "compile": "hardhat compile",
         "test": "hardhat test",
-        "deploy": "node scripts/deploy.js",
-        "deploy-vyper": "node scripts/deployvyper.js"
+        "deploy": "ts-node scripts/deploy.ts",
+        "deploy-vyper": "ts-node scripts/deployvyper.ts"
     },
     "dependencies": {
         "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
