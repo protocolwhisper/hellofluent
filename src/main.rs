@@ -50,7 +50,7 @@ fn main() -> io::Result<()> {
     match selection {
         0 => spin_js(),
         1 => setup_ts_hardhat(solidity_content, vyper_content),
-        2 => setup_rust_code(),
+        2 => spin_rust(),
         _ => unreachable!(),
     };
 
@@ -107,111 +107,26 @@ fn create_file_with_content(output_path: &str, content: &str) -> io::Result<()> 
 
     Ok(())
 }
-fn setup_hardhat_js(soliditysc: &str , vypersc: &str) -> io::Result<()> {
-    let contracts_directory = "contracts";
-    let scripts_directory = "scripts";
-    let solidity_file = "hello.sol";
-    let vyper_file = "hello.vy";
-    let hardhat_config_file = "hardhat-config.js";
-    let deploy_script_file = "deploy.js";
-    let deployvyper_script_file = "deployvyper.js";
-    let package_json_file = "package.json";
-    let hardhat_config_content = r#"require("@nomicfoundation/hardhat-toolbox");
-    /**
-     * @type import('hardhat/config').HardhatUserConfig
-     */
-    module.exports = {
-      networks: {
-        fluent_devnet1: {
-          url: 'https://rpc.dev1.fluentlabs.xyz/', 
-          chainId: 1337, 
-          accounts : [
-            `0x${"ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"}` ], // Replace with the private key of the deploying account
-        },
-      },
-      solidity: {
-        version: '0.8.19', 
-      },
-    };"#;
 
-    let deploy_script_content = r#"async function main() {
-        const [deployer] = await ethers.getSigners();
-      
-        console.log("Deploying contracts with the account:", deployer.address);
-      
-        const token = await ethers.deployContract("Token");
-      
-        console.log("Token address:", await token.getAddress());
-    }
-      
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-          console.error(error);
-          process.exit(1);
-        });"#;
+fn spin_rust() -> io::Result<()>{
 
-    let deployvyper_script_content = r#"async function main() {
-        const [deployer] = await ethers.getSigners();
-        console.log("Deploying contracts with the account:", deployer.address);
-        // Compile your Vyper contract and deploy it
-        const TokenFactory = await ethers.getContractFactory("vypertoken");
-        const token = await TokenFactory.deploy("Hello" , "Fluent");
-        console.log("Token address:", await token.getAddress());
-    }
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });"#;
+    println!("Creating Rust Project ..");
+    const LIB: &str = include_str!("rust-template/lib.rs");
+    const GREET_SC: &str = include_str!("rust-template/greeting.rs");
+    const CARGO: &str = include_str!("rust-template/Cargo.toml");
+    const MAKE_FILE : &str = include_str!("rust-template/Makefile");
+    const STACK_S : &str = include_str!("rust-template/stack.s");
+    const GIT_IG : &str = include_str!("rust-template/gitignore.txt");
 
-    let package_json_content = r#"{
-        "name": "hardhat-project",
-        "version": "1.0.0",
-        "description": "A Hardhat project",
-        "scripts": {
-            "compile": "hardhat compile",
-            "test": "hardhat test",
-            "deploy": "node scripts/deploy.js",
-            "deploy-vyper": "node scripts/deployvyper.js"
-        },
-        "dependencies": {
-            "@nomicfoundation/hardhat-toolbox": "^1.0.0"
-        }
-    }"#;
+    create_file_with_content("src/lib.rs", LIB)?;
+    create_file_with_content("src/greeting.rs", GREET_SC)?;
+    create_file_with_content("Cargo.toml", CARGO)?;
+    create_file_with_content("Makefile", MAKE_FILE)?;
+    create_file_with_content("stack.s", STACK_S)?;
+    create_file_with_content(".gitignore", GIT_IG)?;
 
-    // Create directories
-    fs::create_dir_all(contracts_directory)?;
-    fs::create_dir_all(scripts_directory)?;
-
-    // Create and write content to files
-    let hardhat_config_path = Path::new(hardhat_config_file);
-    let solidity_file_path = Path::new(contracts_directory).join(solidity_file);
-    let vyper_file_path = Path::new(contracts_directory).join(vyper_file);
-    let deploy_script_path = Path::new(scripts_directory).join(deploy_script_file);
-    let deployvyper_script_path = Path::new(scripts_directory).join(deployvyper_script_file);
-    let package_json_path = Path::new(package_json_file);
-
-    let mut hardhat_config_file = File::create(&hardhat_config_path)?;
-    hardhat_config_file.write_all(hardhat_config_content.as_bytes())?;
-
-    let mut solidity_file = File::create(&solidity_file_path)?;
-    solidity_file.write_all(soliditysc.as_bytes())?;
-
-    let mut vyper_file = File::create(&vyper_file_path)?;
-    vyper_file.write_all(vypersc.as_bytes())?;
-
-    let mut deploy_script_file = File::create(&deploy_script_path)?;
-    deploy_script_file.write_all(deploy_script_content.as_bytes())?;
-
-    let mut deployvyper_script_file = File::create(&deployvyper_script_path)?;
-    deployvyper_script_file.write_all(deployvyper_script_content.as_bytes())?;
-
-    let mut package_json_file = File::create(&package_json_path)?;
-    package_json_file.write_all(package_json_content.as_bytes())?;
-
-    println!("Required directories and files have been created successfully.");
+    println!("Rust template created sucessfully");
+    
     Ok(())
 }
 
