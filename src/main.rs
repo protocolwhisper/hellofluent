@@ -95,7 +95,7 @@ fn create_file_with_content(output_path: &str, content: &str) -> io::Result<()> 
 fn spin_rust() -> io::Result<()>{
 
     println!("Creating Rust Project ..");
-    const LIB: &str = include_str!("./rust-template/lib.rs");
+    const LIB: &str = include_str!("rust-template/lib.rs");
     const GREET_SC: &str = include_str!("rust-template/greeting.rs");
     const CARGO: &str = include_str!("rust-template/Cargo.toml");
     const MAKE_FILE : &str = include_str!("rust-template/Makefile");
