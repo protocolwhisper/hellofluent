@@ -10,7 +10,10 @@ include = [
     "src/ts-template/**/*"
 ]
 
-
+# Binary definition
+[[bin]]
+name = "spinfluent"
+path = "src/main.rs"
 
 # Additional metadata (it's a good practice to fill these out)
 description = "Tool for bootstraping Fluent projects"
