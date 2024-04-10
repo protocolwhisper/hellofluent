@@ -6,26 +6,6 @@ use dialoguer::Select;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
-    let solidity_content = r#"
-    // SPDX-License-Identifier: MIT
-    pragma solidity ^0.8.0;
-    contract Hello {
-        function main() public pure returns (string memory) {
-            return "Hello, Solidity!";
-        }
-    }
-    "#;
-
-    let vyper_content = r#"
-    # @version ^0.3.0
-    # Create a string variable that can store maximum 100 characters
-    greet: public(String[100])
-
-    @external
-    def __init__():
-        self.greet = "Hello World"
-    "#;
-
     let ascii_art = r#"
 ██   ██ ███████ ██      ██       ██████      ███████ ██      ██    ██ ███████ ███    ██ ████████ 
 ██   ██ ██      ██      ██      ██    ██     ██      ██      ██    ██ ██      ████   ██    ██    
@@ -142,6 +122,15 @@ fn spin_ts() -> io::Result<()>{
     const VYPER_SCRIPT : &str = include_str!("ts-template/deployvyper.ts");
     const HARDHAT_CONFIG : &str = include_str!("ts-template/hardhat.config.ts");
     const PACKAGE_JSON : &str = include_str!("ts-template/package.json");
+    const TS_CONFIG: &str = include_str!("ts-template/tsconfig.json");
+
+    create_file_with_content("contracts/hello.sol", SOL_SC)?;
+    create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
+    create_file_with_content("scripts/deploy.ts", SOL_SCRIPT)?;
+    create_file_with_content("scripts/deployvyper.ts", VYPER_SCRIPT)?;
+    create_file_with_content("hardhat.config.ts", HARDHAT_CONFIG)?;
+    create_file_with_content("package.json", PACKAGE_JSON)?;
+    create_file_with_content("tsconfig.json", TS_CONFIG)?;
     Ok(())
 }
 
