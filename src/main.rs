@@ -17,7 +17,7 @@ fn main() -> io::Result<()> {
 "#;
 
     println!("{}", ascii_art);
-    println!("HelloFluent\n");
+    println!("Welcome to hellofluent dev tool 🚀\n");
 
     let selections = ["Hardhat JavaScript (Solidity & Vyper)", "Hardhat TypeScript (Solidity & Vyper)", "Rust", "Exit"];
     let selection = Select::new()
