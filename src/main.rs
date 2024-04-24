@@ -6,6 +6,10 @@ use dialoguer::Select;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
+    let use_erc20 = args.len() > 1 && args[1] == "--erc20";
+
+    
+
     let ascii_art = r#"
 ██   ██ ███████ ██      ██       ██████      ███████ ██      ██    ██ ███████ ███    ██ ████████ 
 ██   ██ ██      ██      ██      ██    ██     ██      ██      ██    ██ ██      ████   ██    ██    
@@ -28,7 +32,7 @@ fn main() -> io::Result<()> {
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;  // Convert dialoguer error to io::Error
 
         match selection {
-            0 => spin_js()?,
+            0 => spin_js(use_erc20)?,
             1 => spin_ts()?,
             2 => spin_rust()?,
             3 => {
@@ -40,19 +44,31 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
-fn spin_js() -> io::Result<()>{
+fn spin_js(use_erc20: bool) -> io::Result<()>{
+    if use_erc20{
+        //Contracts
+        const ERC20: &str = include_str!("contract-templates/erc20per.vy");
+        const ERC20SOL: &str =  include_str!("contract-templates/erc20.sol");
+        //Deploy files
+        const DEPLOY_ERC20: &str = include_str!("js-template/deployerc20.js");
+        const DEPLOY_VYPER: &str = include_str!("js-template/deployvy20.js");
+        create_file_with_content("contracts/erc20.sol", ERC20SOL)?;
+        create_file_with_content("contracts/erc20per.vy", ERC20)?;
+        create_file_with_content("scripts/deployerc20.js", DEPLOY_ERC20)?;
+        create_file_with_content("scripts/deployvy20.js", DEPLOY_VYPER)?;
+    }else{
+        const VYPER_SC: &str = include_str!("contract-templates/hello-v.vy");
+        const SOL_SC: &str = include_str!("contract-templates/hello.sol");
+        const SOL_SCRIPT: &str  = include_str!("js-template/deploy.js");
+        const VYPER_SCRIPT : &str = include_str!("js-template/deployvyper.js");
+        create_file_with_content("scripts/deploy.js", SOL_SCRIPT)?;
+        create_file_with_content("scripts/deployvyper.js", VYPER_SCRIPT)?;
+        create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
+        create_file_with_content("contracts/hello.sol", SOL_SC)?;
+    }
 
-    const VYPER_SC: &str = include_str!("contract-templates/hello-v.vy");
-    const SOL_SC: &str = include_str!("contract-templates/hello.sol");
-    const SOL_SCRIPT: &str  = include_str!("js-template/deploy.js");
-    const VYPER_SCRIPT : &str = include_str!("js-template/deployvyper.js");
     const HARDHAT_CONFIG : &str = include_str!("js-template/hardhat.config.js");
     const PACKAGE_JSON : &str = include_str!("js-template/package.json");
-
-    create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
-    create_file_with_content("contracts/hello.sol", SOL_SC)?;
-    create_file_with_content("scripts/deploy.js", SOL_SCRIPT)?;
-    create_file_with_content("scripts/deployvyper.js", VYPER_SCRIPT)?;
     create_file_with_content("hardhat.config.js", HARDHAT_CONFIG)?;
     create_file_with_content("package.json", PACKAGE_JSON)?;
 
@@ -160,6 +176,6 @@ pub mod test {
     }
     #[test]
     fn test_spin_js()-> io::Result<()>{
-        Ok(spin_js()?)
+        Ok(spin_js(true)?)
     }
 }
