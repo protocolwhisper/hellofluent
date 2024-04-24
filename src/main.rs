@@ -33,7 +33,7 @@ fn main() -> io::Result<()> {
 
         match selection {
             0 => spin_js(use_erc20)?,
-            1 => spin_ts()?,
+            1 => spin_ts(use_erc20)?,
             2 => spin_rust()?,
             3 => {
                 println!("Exiting program.");
@@ -133,20 +133,33 @@ fn spin_rust() -> io::Result<()>{
     Ok(())
 }
 
-fn spin_ts() -> io::Result<()>{
+fn spin_ts(use_erc20: bool) -> io::Result<()>{
     println!("Creating Typescript Project ..");
-    const VYPER_SC: &str = include_str!("contract-templates/hello-v.vy");
-    const SOL_SC: &str = include_str!("contract-templates/hello.sol");
-    const SOL_SCRIPT: &str  = include_str!("ts-template/deploy.ts");
-    const VYPER_SCRIPT : &str = include_str!("ts-template/deployvyper.ts");
+    if use_erc20{
+        const ERC20: &str = include_str!("contract-templates/erc20per.vy");
+        const ERC20SOL: &str =  include_str!("contract-templates/erc20.sol");
+        //Deploy files
+        const DEPLOY_ERC20: &str = include_str!("ts-template/deployerc20.ts");
+        const DEPLOY_VYPER: &str = include_str!("ts-template/deploy20vyper.ts");
+        create_file_with_content("contracts/erc20.sol", ERC20SOL)?;
+        create_file_with_content("contracts/erc20per.vy", ERC20)?;
+        create_file_with_content("scripts/deployerc20.ts", DEPLOY_ERC20)?;
+        create_file_with_content("scripts/deployvy20.ts", DEPLOY_VYPER)?;
+    }else {
+        const VYPER_SC: &str = include_str!("contract-templates/hello-v.vy");
+        const SOL_SC: &str = include_str!("contract-templates/hello.sol");
+        const SOL_SCRIPT: &str  = include_str!("ts-template/deploy.ts");
+        const VYPER_SCRIPT : &str = include_str!("ts-template/deployvyper.ts");
+        create_file_with_content("contracts/hello.sol", SOL_SC)?;
+        create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
+        create_file_with_content("scripts/deploy.ts", SOL_SCRIPT)?;
+        create_file_with_content("scripts/deployvyper.ts", VYPER_SCRIPT)?;
+    }
+    // Base file for typescript project
+    
     const HARDHAT_CONFIG : &str = include_str!("ts-template/hardhat.config.ts");
     const PACKAGE_JSON : &str = include_str!("ts-template/package.json");
     const TS_CONFIG: &str = include_str!("ts-template/tsconfig.json");
-
-    create_file_with_content("contracts/hello.sol", SOL_SC)?;
-    create_file_with_content("contracts/hello-v.vy", VYPER_SC)?;
-    create_file_with_content("scripts/deploy.ts", SOL_SCRIPT)?;
-    create_file_with_content("scripts/deployvyper.ts", VYPER_SCRIPT)?;
     create_file_with_content("hardhat.config.ts", HARDHAT_CONFIG)?;
     create_file_with_content("package.json", PACKAGE_JSON)?;
     create_file_with_content("tsconfig.json", TS_CONFIG)?;
