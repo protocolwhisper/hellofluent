@@ -5,7 +5,7 @@ import "@nomiclabs/hardhat-vyper";
 const config: HardhatUserConfig = {
   networks: {
     fluent_devnet1: {
-      url: 'https://rpc.dev1.fluentlabs.xyz/',
+      url: 'https://rpc.dev.thefluent.xyz/',
       chainId: 1337,
       accounts: [
         `0x${"ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"}`
