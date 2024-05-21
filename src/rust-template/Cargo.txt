@@ -6,7 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-fluentbase-sdk = { git = "https://github.com/fluentlabs-xyz/fluentbase", branch = "main", default-features = false, features = ["evm"] }
+fluentbase-sdk = { git = "https://github.com/fluentlabs-xyz/fluentbase", branch = "devel", default-features = false }
+wee_alloc = "0.4.5"
+
+[features]
+default = []
+greeting = []
+std = ["fluentbase-sdk/std"]
 
 [lib]
 crate-type = ["cdylib", "staticlib"]
@@ -16,10 +22,6 @@ panic = "abort"
 lto = true
 opt-level = 'z'
 strip = true
-
-
-[features]
-greeting = []
 
 [dev-dependencies]
 hex = "0.4.3"
