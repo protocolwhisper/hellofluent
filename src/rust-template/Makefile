@@ -26,7 +26,7 @@ build: prepare_output_dir
 	@echo "Copying the wasm file to the output directory..."
 	$(CP) $(WASM_TARGET) $(WASM_OUTPUT_FILE)
 
-	@echo "Converting wasm to wat...""
+	@echo "Converting wasm to wat..."
 	$(WASM2WAT) $(WASM_OUTPUT_FILE) > $(WASM_WAT_FILE)
 	@echo "Done  🎉"
 prepare_output_dir:

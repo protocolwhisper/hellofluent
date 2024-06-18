@@ -112,19 +112,15 @@ fn spin_rust() -> io::Result<()>{
 
     println!("Creating Rust Project ..");
     const LIB: &str = include_str!("rust-template/lib.rs");
-    const GREET_SC: &str = include_str!("rust-template/greeting.rs");
     const CARGO: &str = include_str!("rust-template/Cargo.txt");
     const MAKE_FILE : &str = include_str!("rust-template/Makefile");
-    const STACK_S : &str = include_str!("rust-template/stack.s");
     const GIT_IG : &str = include_str!("rust-template/gitignore.txt");
     const DEPLOYOR : &str = include_str!("deployor/deployor.js");
     const PACKAGE_J: &str =  include_str!("deployor/package.json");
 
     create_file_with_content("src/lib.rs", LIB)?;
-    create_file_with_content("src/greeting.rs", GREET_SC)?;
     create_file_with_content("Cargo.toml", CARGO)?;
     create_file_with_content("Makefile", MAKE_FILE)?;
-    create_file_with_content("stack.s", STACK_S)?;
     create_file_with_content(".gitignore", GIT_IG)?;
     create_file_with_content("deployor/deployor.js", DEPLOYOR)?;
     create_file_with_content("deployor/package.json", PACKAGE_J)?;
