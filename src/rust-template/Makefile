@@ -1,19 +1,42 @@
-FILES = greeting
+.DEFAULT_GOAL := all
 
-CUR_DIR=$(shell pwd)
-OUT_FOLDER=bin
-OUT_DIR=$(CUR_DIR)/$(OUT_FOLDER)
+# Compilation flags
+RUSTFLAGS := '-C link-arg=-zstack-size=131072 -C target-feature=+bulk-memory -C opt-level=z -C strip=symbols'
 
-all: $(FILES)
+# Paths to the target WASM file and output directory
+WASM_TARGET := ./target/wasm32-unknown-unknown/release/greeting.wasm
+WASM_OUTPUT_DIR := bin
+WASM_OUTPUT_FILE := $(WASM_OUTPUT_DIR)/greeting.wasm
+WASM_WAT_FILE := $(WASM_OUTPUT_DIR)/greeting.wat
 
-.PHONY: $(FILES)
-$(FILES):
-	@RUSTFLAGS='-C link-arg=-zstack-size=262144 -C target-feature=+bulk-memory' cargo build --release --target=wasm32-unknown-unknown --features=$@ > /dev/null 2>&1
-	@mkdir -p $(OUT_FOLDER)
-	@cp ./target/wasm32-unknown-unknown/release/$@.wasm $(OUT_FOLDER)/$@.wasm
-	@wasm2wat $(OUT_FOLDER)/$@.wasm > $(OUT_FOLDER)/$@.wat
-	@$(MAKE) custom_file FILE_IN="$(OUT_DIR)/$@.wasm" FILE_OUT="$(OUT_DIR)/$@.rwasm" > /dev/null 2>&1
-	@echo "wasm to rwasm created 🎉"
-custom_file:
-	@cp $(FILE_IN) $(FILE_OUT)
-	
+# Commands
+CARGO_BUILD := cargo build --release --target=wasm32-unknown-unknown --no-default-features
+RM := rm -rf
+MKDIR := mkdir -p
+CP := cp
+WASM2WAT := wasm2wat
+
+# Targets
+all: build
+
+build: prepare_output_dir
+	@echo "Building the project..."
+	RUSTFLAGS=$(RUSTFLAGS) $(CARGO_BUILD)
+
+	@echo "Copying the wasm file to the output directory..."
+	$(CP) $(WASM_TARGET) $(WASM_OUTPUT_FILE)
+
+	@echo "Converting wasm to wat...""
+	$(WASM2WAT) $(WASM_OUTPUT_FILE) > $(WASM_WAT_FILE)
+	@echo "Done  🎉"
+prepare_output_dir:
+	@echo "Preparing the output directory..."
+	$(RM) $(WASM_OUTPUT_DIR)
+	$(MKDIR) $(WASM_OUTPUT_DIR)
+
+clean:
+	@echo "Cleaning the project..."
+	$(RM) $(WASM_OUTPUT_DIR)
+	$(RM) ./target
+
+.PHONY: all build prepare_output_dir clean

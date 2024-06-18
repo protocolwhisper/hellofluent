@@ -1,47 +1,34 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-#![allow(dead_code)]
-extern crate alloc;
+#![cfg_attr(target_arch = "wasm32", no_std)]
 extern crate fluentbase_sdk;
 
-use alloc::vec::Vec;
-use fluentbase_sdk::{LowLevelAPI, LowLevelSDK};
+use fluentbase_sdk::{basic_entrypoint, SharedAPI};
 
-#[cfg(feature = "cairo")]
-mod cairo;
-#[cfg(feature = "contract_input_check_recode")]
-mod contract_input_check_recode;
-// #[cfg(feature = "erc20")]
-// mod erc20;
-#[cfg(feature = "evm_call_from_wasm")]
-mod evm_call_from_wasm;
-#[cfg(feature = "greeting")]
-mod greeting;
-#[cfg(feature = "stack")]
-mod stack;
+#[derive(Default)]
+struct GREETING;
 
-macro_rules! export_and_forward {
-    ($fn_name:ident) => {
-        #[cfg(not(feature = "std"))]
-        #[no_mangle]
-        #[cfg(target_arch = "wasm32")]
-        pub extern "C" fn $fn_name() {
-            #[cfg(feature = "greeting")]
-            greeting::$fn_name();
-        }
-    };
+impl GREETING {
+    fn deploy<SDK: SharedAPI>(&self) {
+        // any custom deployment logic here
+    }
+    fn main<SDK: SharedAPI>(&self) {
+        // write "Hello, World" message into output
+        SDK::write("Hello, World".as_bytes());
+    }
 }
 
-export_and_forward!(deploy);
-export_and_forward!(main);
+basic_entrypoint!(GREETING);
 
-pub(crate) fn get_input() -> Vec<u8> {
-    let input_size = LowLevelSDK::sys_input_size();
-    let mut input_buffer = Vec::with_capacity(input_size as usize);
-    LowLevelSDK::sys_read(&mut input_buffer, 0);
-    input_buffer
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use fluentbase_sdk::LowLevelSDK;
 
-pub(crate) fn write_output(output: Vec<u8>) {
-    LowLevelSDK::sys_write(&output);
-    LowLevelSDK::sys_halt(0);
+    #[test]
+    fn test_contract_works() {
+        let greeting = GREETING::default();
+        greeting.deploy::<LowLevelSDK>();
+        greeting.main::<LowLevelSDK>();
+        let test_output = LowLevelSDK::get_test_output();
+        assert_eq!(&test_output, "Hello, World".as_bytes());
+    }
 }
