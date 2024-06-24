@@ -6,7 +6,7 @@ const DEPLOYER_PRIVATE_KEY = 'ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae
 const main = async () => {
     if (process.argv.length < 3) {
         console.log(`You must specify path to the WASM binary!`);
-        console.log(`Example: node deploy-contract.js --dev ./bin/greeting.wasm`);
+        console.log(`Example: node deploy-contract.js --dev ../bin/greeting.wasm`);
         process.exit(-1);
     }
     let args = process.argv.slice(2);
