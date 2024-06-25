@@ -1,20 +1,32 @@
 #![cfg_attr(target_arch = "wasm32", no_std)]
+extern crate alloc;
 extern crate fluentbase_sdk;
-use fluentbase_sdk::{basic_entrypoint, SharedAPI};
+
+use alloc::string::String;
+use fluentbase_sdk::{
+    basic_entrypoint,
+    derive::{router, signature},
+    SharedAPI,
+};
 
 #[derive(Default)]
-struct GREETING;
+struct ROUTER;
 
-impl GREETING {
-    fn deploy<SDK: SharedAPI>(&self) {
+pub trait RouterAPI {
+    fn deploy(&self);
+    fn greeting(&self) -> String;  // Removed message parameter
+}
+
+#[router(mode = "solidity")]
+impl RouterAPI for ROUTER {
+    fn deploy(&self) {
         // any custom deployment logic here
     }
 
-    fn main<SDK: SharedAPI>(&self) {
-        // write "Hello, World" message into output
-        const HELLO: &[u8] = b"Hello, world";
-        SDK::write(HELLO.as_ptr(), HELLO.len() as u32);
+    #[signature("function greeting() external returns (string)")]
+    fn greeting(&self) -> String {
+        "Hello".into()
     }
 }
 
-basic_entrypoint!(GREETING);
+basic_entrypoint!(ROUTER);
