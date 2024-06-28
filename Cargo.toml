@@ -1,11 +1,11 @@
 [package]
-name = "hellofluent"
-version = "0.1.7"
+name = "gblend"
+version = "0.0.1"
 edition = "2021"
-description = "Tool for bootstrapping Fluent projects"
+description = "CLI tool for bootstrapping Fluent projects"
 license = "MIT"
 authors = ["protocolwhisper <protocol.eth@gmail.com>"]
-repository = "https://github.com/protocolwhisper/spinfluent"
+repository = "https://github.com/fluentlabs-xyz/gblend"
 # Consider whether you really need the include field or what should be specified
 # include = ["src/rust-template/**/*", "src/contract-templates/**/*", "src/js-template/**/*", "src/ts-template/**/*"]
 
@@ -13,5 +13,5 @@ repository = "https://github.com/protocolwhisper/spinfluent"
 dialoguer = "0.11.0"
 
 [[bin]]
-name = "hellofluent"
+name = "gblend"
 path = "src/main.rs"
