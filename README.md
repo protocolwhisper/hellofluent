@@ -1,4 +1,4 @@
-# :sparkles: gblend :sparkles: App
+# gblend App
 
 
 <p align="center">
