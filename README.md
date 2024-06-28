@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="https://i.ibb.co/SrYG3NM/Screenshot-from-2024-06-18-00-11-33.png" alt="hellofluent">
+  <img src="https://i.ibb.co/CPfnFNV/gblend2.png" alt="gblend">
 </p>
 
 
