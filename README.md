@@ -6,8 +6,7 @@
 </p>
 
 
-
-HelloFluent 🚀—a blazing-fast Rust app for bootstrapping your first WebAssembly (WASM) project on the Fluent Network.
+Blazing-fast Rust app for bootstrapping your first WebAssembly (WASM) project on the Fluent Network.
 ## Choose Your Setup
 
 You can start your project with any of the following setups:
@@ -24,7 +23,7 @@ You can start your project with any of the following setups:
 
 ## Getting Started
 
-Install and run `HelloFluent` with: `cargo install hellofluent` followed by `hellofluent` in your desired directory.
+Install and run `gblend` with: `cargo install gblend` followed by `gblend` in your desired directory.
 
 ## Contribute
 
