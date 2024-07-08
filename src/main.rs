@@ -7,8 +7,12 @@ use dialoguer::Select;
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     let use_erc20 = args.len() > 1 && args[1] == "--erc20";
+    let blended_app = args.len() > 1  && args[1] == "--blendedapp";
 
-    
+    if blended_app {
+        spin_blended_app()?;
+        return Ok(());
+    }
 
     let ascii_art = r#"
     ██████╗ ██████╗ ██╗     ███████╗███╗   ██╗██████╗ 
@@ -107,6 +111,21 @@ fn create_file_with_content(output_path: &str, content: &str) -> io::Result<()> 
     Ok(())
 }
 
+//Create dir 
+fn create_directories(output_path: &str) -> io::Result<()> {
+    // Check if the output path has a parent directory and create it if necessary
+    if let Some(parent_dir) = Path::new(output_path).parent() {
+        if !parent_dir.exists() {
+            fs::create_dir_all(parent_dir)?;
+        }
+    }
+
+    // Create the directory at the output path
+    fs::create_dir_all(output_path)?;
+
+    Ok(())
+}
+
 fn spin_rust() -> io::Result<()>{
 
     println!("Creating Rust Project ..");
@@ -158,6 +177,30 @@ fn spin_ts(use_erc20: bool) -> io::Result<()>{
     create_file_with_content("hardhat.config.ts", HARDHAT_CONFIG)?;
     create_file_with_content("package.json", PACKAGE_JSON)?;
     create_file_with_content("tsconfig.json", TS_CONFIG)?;
+    Ok(())
+}
+
+fn spin_blended_app() -> io::Result<()>{
+    println!("Creating blended app ..");
+    const HARDHAT_CONFIG : &str = include_str!("blendedapp/hardhatconfig.ts");
+    const PACKAGE_JSON: &str = include_str!("blendedapp/package.json");
+    const TS_CONFIG : &str = include_str!("blendedapp/tsconfig.json");
+    const DEPLOYMENT_SCRIPT: &str =  include_str!("blendedapp/deploymentscript.ts");
+    const GREETING_TASK: &str = include_str!("blendedapp/greetingtask.ts");
+    const MAKE_FILE : &str = include_str!("blendedapp/Makefile.txt");
+    const CARGO_TOML: &str =  include_str!("blendedapp/cargo.txt");
+
+    create_directories("contracts")?;
+
+    create_file_with_content("hardhat.config.ts", HARDHAT_CONFIG)?;
+    create_file_with_content("package.json", PACKAGE_JSON)?;
+    create_file_with_content("tsconfig.json", TS_CONFIG)?;
+    create_file_with_content("tasks/random.ts", GREETING_TASK)?;
+    create_file_with_content("deploy/00_deploy_contracts.ts", DEPLOYMENT_SCRIPT)?;
+    create_file_with_content("rustapp/Makefile", MAKE_FILE)?;
+    create_file_with_content("rustapp/Cargo.toml", CARGO_TOML)?;
+
+
     Ok(())
 }
 
