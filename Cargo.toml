@@ -10,6 +10,7 @@ repository = "https://github.com/fluentlabs-xyz/gblend"
 # include = ["src/rust-template/**/*", "src/contract-templates/**/*", "src/js-template/**/*", "src/ts-template/**/*"]
 
 [dependencies]
+anyhow = "1.0.86"
 dialoguer = "0.11.0"
 
 [[bin]]

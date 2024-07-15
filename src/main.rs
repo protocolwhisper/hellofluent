@@ -3,8 +3,10 @@ use std::fs::{self, File};
 use std::io::{self, Read, Write};
 use std::path::Path;
 use dialoguer::Select;
+use anyhow::Result;
+use anyhow::anyhow;
 
-fn main() -> io::Result<()> {
+fn main() -> Result<(())> {
     let args: Vec<String> = env::args().collect();
     let use_erc20 = args.len() > 1 && args[1] == "--erc20";
     let blended_app = args.len() > 1  && args[1] == "--blendedapp";
@@ -12,6 +14,8 @@ fn main() -> io::Result<()> {
     if blended_app {
         spin_blended_app()?;
         return Ok(());
+    }else{
+        return Err(anyhow!("Not a valid command : try gblend --blendedapp (Rust & Solidity) "));
     }
 
     let ascii_art = r#"
