@@ -9,14 +9,14 @@ use anyhow::anyhow;
 fn main() -> Result<(())> {
     let args: Vec<String> = env::args().collect();
     let use_erc20 = args.len() > 1 && args[1] == "--erc20";
-    let blended_app = args.len() > 1  && args[1] == "--blendedapp";
+    //let blended_app = args.len() > 1  && args[1] == "--blendedapp";
 
-    if blended_app {
-        spin_blended_app()?;
-        return Ok(());
-    }else{
-        return Err(anyhow!("Not a valid command : try gblend --blendedapp (Rust & Solidity) "));
-    }
+    // if blended_app {
+    //     spin_blended_app()?;
+    //     return Ok(());
+    // }else{
+    //     return Err(anyhow!("Not a valid command : try gblend --blendedapp (Rust & Solidity) "));
+    // }
 
     let ascii_art = r#"
     ██████╗ ██████╗ ██╗     ███████╗███╗   ██╗██████╗ 
