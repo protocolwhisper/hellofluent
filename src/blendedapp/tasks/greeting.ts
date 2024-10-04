@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 
-task("get-random", "Fetches the greeting from the deployed GreetingWithWorld contract")
-  .addParam("contract", "The address of the deployed contract")
+task("get-greeting", "Fetches the greeting from the deployed GreetingWithWorld contract")
+  .addParam("contract", "The address of the deployed GreetingWithWorld contract")
   .setAction(async ({ contract }, hre) => {
     const { ethers } = hre;
     
@@ -9,7 +9,7 @@ task("get-random", "Fetches the greeting from the deployed GreetingWithWorld con
     console.log("Block Number:", getBlockNumber);
 
     const GreetingWithWorld = await ethers.getContractAt(
-      "Random",
+      "GreetingWithWorld",
       contract
     );
 

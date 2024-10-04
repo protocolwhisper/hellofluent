@@ -1,7 +1,7 @@
 import { HardhatUserConfig } from "hardhat/types";
 import "hardhat-deploy";
 import "@nomicfoundation/hardhat-toolbox";
-import "./tasks/random"
+import "./tasks/greeting"
 
 require("dotenv").config();
 

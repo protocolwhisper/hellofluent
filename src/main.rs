@@ -30,7 +30,7 @@ fn main() -> Result<(())> {
     println!("{}", ascii_art);
     println!("Welcome to gblend dev tool 🚀\n");
 
-    let selections = ["Hardhat JavaScript (Solidity & Vyper)", "Hardhat TypeScript (Solidity & Vyper)", "Rust", "Exit"];
+    let selections = ["Hardhat JavaScript (Solidity & Vyper)", "Hardhat TypeScript (Solidity & Vyper)", "Rust","Blendedapp" ,"Exit"];
     let selection = Select::new()
         .with_prompt("Choose your setup")
         .default(0)
@@ -42,7 +42,8 @@ fn main() -> Result<(())> {
             0 => spin_js(use_erc20)?,
             1 => spin_ts(use_erc20)?,
             2 => spin_rust()?,
-            3 => {
+            3 => spin_blended_app()?,
+            4 => {
                 println!("Exiting program.");
                 return Ok(()); // Exit the program gracefully
             },
@@ -184,29 +185,46 @@ fn spin_ts(use_erc20: bool) -> io::Result<()>{
     Ok(())
 }
 
-fn spin_blended_app() -> io::Result<()>{
-    println!("Creating blended app ..");
-    const HARDHAT_CONFIG : &str = include_str!("blendedapp/hardhatconfig.ts");
-    const PACKAGE_JSON: &str = include_str!("blendedapp/package.json");
-    const TS_CONFIG : &str = include_str!("blendedapp/tsconfig.json");
-    const DEPLOYMENT_SCRIPT: &str =  include_str!("blendedapp/deploymentscript.ts");
-    const GREETING_TASK: &str = include_str!("blendedapp/greetingtask.ts");
-    const MAKE_FILE : &str = include_str!("blendedapp/Makefile.txt");
-    const CARGO_TOML: &str =  include_str!("blendedapp/cargo.txt");
+fn spin_blended_app() -> io::Result<()> {
+    println!("Creating blended app ...");
 
+    // Embed the files in the binary using `include_str!`
+    const HARDHAT_CONFIG: &str = include_str!("blendedapp/hardhat.config.ts");
+    const PACKAGE_JSON: &str = include_str!("blendedapp/package.json");
+    const TS_CONFIG: &str = include_str!("blendedapp/tsconfig.json");
+    const DEPLOYMENT_SCRIPT: &str = include_str!("blendedapp/deploy/00_deploy_contracts.ts");
+    const GREETING_TASK: &str = include_str!("blendedapp/tasks/greeting.ts");
+    const MAKE_FILE: &str = include_str!("blendedapp/hellorust/Makefile.txt");
+    const LIB: &str = include_str!("blendedapp/hellorust/lib.rs");
+    const CARGO_TOML: &str = include_str!("blendedapp/hellorust/cargo.txt");
+    const GREETING_SC: &str = include_str!("blendedapp/contracts/GreetingWithWorld.sol");
+    const INTERFACE_SC: &str = include_str!("blendedapp/contracts/IFluentGreeting.sol");
+    const README: &str = include_str!("blendedapp/README.md");
+    const GIT_IGNORE: &str = include_str!("blendedapp/.gitignore");
+    // Create necessary directories and write files
     create_directories("contracts")?;
+    create_directories("tasks")?;
+    create_directories("deploy")?;
+    create_directories("hellorust")?;
 
     create_file_with_content("hardhat.config.ts", HARDHAT_CONFIG)?;
+    create_file_with_content("contracts/GreetingWithWorld.sol", GREETING_SC)?;
+    create_file_with_content("contracts/IFluentGreeting.sol", INTERFACE_SC)?;
     create_file_with_content("package.json", PACKAGE_JSON)?;
     create_file_with_content("tsconfig.json", TS_CONFIG)?;
-    create_file_with_content("tasks/random.ts", GREETING_TASK)?;
+    create_file_with_content("tasks/greeting.ts", GREETING_TASK)?;
     create_file_with_content("deploy/00_deploy_contracts.ts", DEPLOYMENT_SCRIPT)?;
-    create_file_with_content("rustapp/Makefile", MAKE_FILE)?;
-    create_file_with_content("rustapp/Cargo.toml", CARGO_TOML)?;
-
+    create_file_with_content("hellorust/Makefile", MAKE_FILE)?;
+    create_file_with_content("hellorust/Cargo.toml", CARGO_TOML)?;
+    create_file_with_content("hellorust/lib.rs", LIB)?;
+    create_file_with_content("README.md", README)?;
+    create_file_with_content(".gitignore", GIT_IGNORE)?;
+    println!("Blended app created successfully!");
 
     Ok(())
+
 }
+
 
 #[cfg(test)]
 pub mod test {

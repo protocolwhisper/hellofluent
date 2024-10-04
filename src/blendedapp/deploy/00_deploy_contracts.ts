@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const DEPLOYER_PRIVATE_KEY =
   process.env.DEPLOYER_PRIVATE_KEY ||
-  "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+  "";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts, ethers, config, network } = hre;
@@ -20,7 +20,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // Deploy WASM contract
   // ---------------------
   console.log("Deploying WASM contract...");
-  const wasmBinaryPath = "./rustapp/bin/blendedapp.wasm"; // TODO: Update this path to your actual wasm file
+  const wasmBinaryPath = "./hellorust/bin/greeting.wasm"; // TODO: Update this path to your actual wasm file
   // @ts-ignore
   const provider = new ethers.JsonRpcProvider(network.config.url);
 
@@ -41,16 +41,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // ---------------------
   // Deploy GreetingWithWorld contract
   // ---------------------
-  console.log("Deploying solidity contract...");
+  console.log("Deploying GreetingWithWorld contract...");
   const fluentGreetingContractAddress = checkmateValidatorAddress; // Replace with the actual address if different
 
-  const greetingWithWorld = await deploy("Random", {
+  const greetingWithWorld = await deploy("GreetingWithWorld", {
     from: deployerAddress,
     args: [fluentGreetingContractAddress],
     log: true,
   });
 
-  console.log(`Random contract deployed at: ${greetingWithWorld.address}`);
+  console.log(`GreetingWithWorld contract deployed at: ${greetingWithWorld.address}`);
 };
 
 
@@ -79,7 +79,7 @@ async function deployWasmContract(
   
     const transaction = {
       data: "0x" + wasmBinary.toString("hex"),
-      gasLimit: 300_000_000,
+      gasLimit: 500_000,
       gasPrice: gasPrice,
     };
   
