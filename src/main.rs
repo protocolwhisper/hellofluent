@@ -30,7 +30,7 @@ fn main() -> Result<(())> {
     println!("{}", ascii_art);
     println!("Welcome to gblend dev tool 🚀\n");
 
-    let selections = ["Hardhat JavaScript (Solidity & Vyper)", "Hardhat TypeScript (Solidity & Vyper)", "Rust","Blendedapp" ,"Exit"];
+    let selections = ["Hardhat JavaScript (Solidity & Vyper)", "Hardhat TypeScript (Solidity & Vyper)", "Rust","Blendedapp 🔄" ,"Exit"];
     let selection = Select::new()
         .with_prompt("Choose your setup")
         .default(0)
