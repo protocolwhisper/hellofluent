@@ -201,7 +201,7 @@ fn spin_blended_app() -> io::Result<()> {
     const INTERFACE_SC: &str = include_str!("blendedapp/contracts/IFluentGreeting.sol");
     const README: &str = include_str!("blendedapp/README.md");
     const GIT_IGNORE: &str = include_str!("blendedapp/.gitignore");
-    const CARGO_LOCK: &str = include_str!("blendedapp/.gitignore");;
+    const CARGO_LOCK: &str = include_str!("blendedapp/hellorust/Cargo.lock");;
     // Create necessary directories and write files
     create_directories("contracts")?;
     create_directories("tasks")?;
