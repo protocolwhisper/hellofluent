@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="https://i.ibb.co/CPfnFNV/gblend2.png" alt="gblend">
+  <img src="https://i.ibb.co/CwXLfxb/Screenshot-2024-10-14-at-7-15-34-PM.png" alt="gblend">
 </p>
 
 
@@ -27,12 +27,12 @@ Install and run `gblend` with: `cargo install gblend` followed by `gblend` in yo
 
 ## Contribute
 
-HelloFluent is an open-source project, and community contributions are vital to its growth and improvement. Whether it's fixing bugs, adding features, or improving documentation, all contributions are welcome. If you're interested in helping out, please take a look at our issues tracker and read our contribution guidelines before submitting a pull request.
+gblend is an open-source project, and community contributions are vital to its growth and improvement. Whether it's fixing bugs, adding features, or improving documentation, all contributions are welcome. If you're interested in helping out, please take a look at our issues tracker and read our contribution guidelines before submitting a pull request.
 
 Feel free to fork the repository, make your changes, and submit a pull request for review. Let's build something great together!
 
 ## License
 
-HelloFluent is MIT licensed, as found in the LICENSE file.
+gblend is MIT licensed, as found in the LICENSE file.
 
 

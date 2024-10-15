@@ -140,6 +140,7 @@ fn spin_rust() -> io::Result<()>{
     const GIT_IG : &str = include_str!("rust-template/gitignore.txt");
     const DEPLOYOR : &str = include_str!("deployer/deployer.js");
     const PACKAGE_J: &str =  include_str!("deployer/package.json");
+    const CARGO_LOCK: &str = include_str!("blendedapp/hellorust/Cargo.lock");
 
     create_file_with_content("src/lib.rs", LIB)?;
     create_file_with_content("Cargo.toml", CARGO)?;
@@ -147,6 +148,7 @@ fn spin_rust() -> io::Result<()>{
     create_file_with_content(".gitignore", GIT_IG)?;
     create_file_with_content("deployer/deployer.js", DEPLOYOR)?;
     create_file_with_content("deployer/package.json", PACKAGE_J)?;
+    create_file_with_content("Cargo.lock", CARGO_LOCK)?;
     println!("Rust template created sucessfully");
     
     Ok(())
@@ -201,7 +203,7 @@ fn spin_blended_app() -> io::Result<()> {
     const INTERFACE_SC: &str = include_str!("blendedapp/contracts/IFluentGreeting.sol");
     const README: &str = include_str!("blendedapp/README.md");
     const GIT_IGNORE: &str = include_str!("blendedapp/.gitignore");
-    const CARGO_LOCK: &str = include_str!("blendedapp/hellorust/Cargo.lock");;
+    const CARGO_LOCK: &str = include_str!("blendedapp/hellorust/Cargo.lock");
     // Create necessary directories and write files
     create_directories("contracts")?;
     create_directories("tasks")?;
