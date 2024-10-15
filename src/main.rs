@@ -220,7 +220,7 @@ fn spin_blended_app() -> io::Result<()> {
     create_file_with_content("hellorust/lib.rs", LIB)?;
     create_file_with_content("README.md", README)?;
     create_file_with_content(".gitignore", GIT_IGNORE)?;
-    create_file_with_content("Cargo.lock", CARGO_LOCK)?;
+    create_file_with_content("hellorust/Cargo.lock", CARGO_LOCK)?;
     println!("Blended app created successfully!");
 
     Ok(())
