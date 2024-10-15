@@ -15,6 +15,7 @@ You can start your project with any of the following setups:
 - **Hardhat JavaScript (Solidity & Vyper)**: Ideal for developers comfortable with JavaScript.
 - **Hardhat TypeScript (Solidity & Vyper)**: Perfect for those who prefer TypeScript for type-safety.
 - **Rust**: Best for developers looking to leverage the power of Rust in WASM.
+- **Blended app**: Blended app ( Wasm & Solidity template) 
 - **Exit**: Leave the setup.
 
 ## Features
