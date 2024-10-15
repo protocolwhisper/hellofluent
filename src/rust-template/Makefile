@@ -4,9 +4,9 @@
 RUSTFLAGS := '-C link-arg=-zstack-size=131072 -C target-feature=+bulk-memory -C opt-level=z -C strip=symbols'
 
 # Paths to the target WASM file and output directory
-WASM_TARGET := ./target/wasm32-unknown-unknown/release/greeting.wasm
+WASM_TARGET := ./target/wasm32-unknown-unknown/release/rustsimplesc.wasm
 WASM_OUTPUT_DIR := bin
-WASM_OUTPUT_FILE := $(WASM_OUTPUT_DIR)/greeting.wasm
+WASM_OUTPUT_FILE := $(WASM_OUTPUT_DIR)/rustsimplesc.wasm
 
 # Commands
 CARGO_BUILD := cargo build --release --target=wasm32-unknown-unknown --no-default-features
