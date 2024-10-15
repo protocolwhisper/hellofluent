@@ -87,7 +87,7 @@ async function deployWasmContract(
     const receipt = await tx.wait();
   
     if (receipt && receipt.contractAddress) {
-      console.log(`WASM contract deployed at: ${receipt.contractAddress}`);
+      console.log(`WASM Greeting contract deployed at: ${receipt.contractAddress}`);
   
       const artifact = {
         abi: [], // Since there's no ABI for the WASM contract
