@@ -2,8 +2,9 @@
 
 
 <p align="center">
-  <img src="https://i.ibb.co/CwXLfxb/Screenshot-2024-10-14-at-7-15-34-PM.png" alt="gblend">
+  <img src="https://i.ibb.co/CwXLfxb/Screenshot-2024-10-14-at-7-15-34-PM.png" alt="gblend" width="500" height="300">
 </p>
+
 
 
 Blazing-fast Rust app for bootstrapping your first WebAssembly (WASM) project on the Fluent Network.
