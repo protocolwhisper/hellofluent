@@ -1,13 +1,25 @@
 use std::env;
 use std::fs::{self, File};
+
 use std::io::{self, Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::str::ParseBoolError;
 use dialoguer::Select;
 use anyhow::Result;
 use anyhow::anyhow;
 
-fn main() -> Result<(())> {
+use std::process::Command;
+
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
+
+    // Compile command 
+    if args.len() == 4 && args[2] == "compile" {
+        let file = args[3].trim_end_matches(".rs");
+        compile_rust_file(file)?; // Ensure this returns Result
+        return Ok(());
+    }
+
     let use_erc20 = args.len() > 1 && args[1] == "--erc20";
     //let blended_app = args.len() > 1  && args[1] == "--blendedapp";
 
@@ -228,6 +240,102 @@ fn spin_blended_app() -> io::Result<()> {
     Ok(())
 
 }
+fn find_wasm_output(release_dir: &Path) -> Result<PathBuf> {
+    // List the files in the release directory and find the .wasm file
+    let entries = fs::read_dir(release_dir)?;
+    for entry in entries {
+        let entry = entry?;
+        let path = entry.path();
+        if path.extension().and_then(|s| s.to_str()) == Some("wasm") {
+            return Ok(path);
+        }
+    }
+    Err(anyhow!("No .wasm file found in the release directory"))
+}
+
+fn compile_rust_file(file_or_dir: &str) -> Result<()> {
+    let path = Path::new(file_or_dir);
+
+    // Debug: Print the provided path
+    println!("Checking file or directory: {}", path.display());
+
+    // Check if it's a directory and attempt to find a main.rs or lib.rs, either directly or inside src/
+    let rs_file: PathBuf;
+    if path.is_dir() {
+        // Check in the root of the directory
+        let main_file = path.join("main.rs");
+        let lib_file = path.join("lib.rs");
+
+        // Check in the src/ subdirectory
+        let src_main_file = path.join("src").join("main.rs");
+        let src_lib_file = path.join("src").join("lib.rs");
+
+        println!("Looking for main.rs at: {}", main_file.display());
+        println!("Looking for lib.rs at: {}", lib_file.display());
+        println!("Looking for src/main.rs at: {}", src_main_file.display());
+        println!("Looking for src/lib.rs at: {}", src_lib_file.display());
+
+        if main_file.exists() {
+            rs_file = main_file;
+        } else if lib_file.exists() {
+            rs_file = lib_file;
+        } else if src_main_file.exists() {
+            rs_file = src_main_file;
+        } else if src_lib_file.exists() {
+            rs_file = src_lib_file;
+        } else {
+            return Err(anyhow!("No main.rs or lib.rs found in the provided directory or src/ subdirectory: {}", path.display()));
+        }
+    } else {
+        // Treat the path as a specific file
+        rs_file = path.to_path_buf();
+        println!("Checking if file exists: {}", rs_file.display());
+    }
+
+    // Recheck if the file exists, printing the full path for debugging
+    if !rs_file.exists() {
+        return Err(anyhow!("File does not exist: {}", rs_file.display()));
+    }
+
+    println!("File exists: {}", rs_file.display());
+
+    // Find the project directory (go one level up from src/ if the file is in src/)
+    let project_dir = if rs_file.starts_with("src") || rs_file.parent().map_or(false, |p| p.ends_with("src")) {
+        rs_file.parent().and_then(|p| p.parent()).unwrap_or_else(|| Path::new("."))
+    } else {
+        rs_file.parent().unwrap_or_else(|| Path::new("."))
+    };
+
+    let cargo_file = project_dir.join("Cargo.toml");
+
+    // Check if Cargo.toml exists
+    if !cargo_file.exists() {
+        return Err(anyhow!("No Cargo.toml found in the project directory: {}", project_dir.display()));
+    }
+
+    println!("Compiling Rust file: {} in project {}", rs_file.display(), project_dir.display());
+
+    // Run the cargo build command
+    let status = Command::new("cargo")
+        .arg("build")
+        .arg("--release")
+        .arg("--target=wasm32-unknown-unknown")
+        .current_dir(project_dir)
+        .status()
+        .expect("Failed to execute cargo build");
+
+    if !status.success() {
+        return Err(anyhow!("Cargo build failed for {}", rs_file.display()));
+    }
+
+    // Find the actual .wasm file in the release directory
+    let release_dir = project_dir.join("target/wasm32-unknown-unknown/release");
+    let wasm_output = find_wasm_output(&release_dir)?;
+
+    println!("WASM binary created at: {}", wasm_output.display());
+    Ok(())
+}
+
 
 
 #[cfg(test)]
