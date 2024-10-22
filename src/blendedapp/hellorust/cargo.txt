@@ -1,6 +1,6 @@
 [package]
 edition = "2021"
-name = "rustsimplesc"
+name = "greeting"
 version = "0.1.0"
 
 [dependencies]
@@ -10,7 +10,7 @@ fluentbase-sdk = {git = "https://github.com/fluentlabs-xyz/fluentbase", default-
 rand = { version = "0.8.3", features = ["small_rng"], default-features = false }
 [lib]
 crate-type = ["cdylib", "staticlib"]
-path = "src/lib.rs"
+path = "lib.rs"
 
 [profile.release]
 lto = true
